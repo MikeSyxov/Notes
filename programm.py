@@ -39,6 +39,26 @@ def print_notes(notes):
             print(f'Дата/время: {note["timestamp"]}')
             print('---')
 
+# Функция для удаления записки
+def delete_note(notes, id):
+    for note in notes:
+        if note['id'] == id:
+            notes.remove(note)
+        break
+    return notes
+
+# Функция для редактирования записки
+def edit_note(notes, id):
+    for note in notes:
+        if note['id'] == id:
+            new_title = input(f'Введите новый заголовок (было: {note["title"]}): ')
+            new_body = input(f'Введите новое тело заметки (было: {note["body"]}): ')
+            note['title'] = new_title
+            note['body'] = new_body
+            note['timestamp'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        break
+    return notes
+
 def main():
     file_name = 'notes.json'
     notes = read_notes_file(file_name)
@@ -60,14 +80,21 @@ def main():
             filtered_notes = filter_notes_by_date(notes, date)
             print_notes(filtered_notes) 
         elif choice == '3':
-            pass
+            id = int(input('Введите ID заметки: '))
+            note = [note for note in notes if note['id'] == id]
+            print_notes(note)
         elif choice == '4':
             notes = add_notes(notes)
             save_notes_json(notes, file_name)
         elif choice == '5':
-            pass
+            id = int(input('Введите ID заметки для редактирования: '))
+            notes = edit_note(notes, id)
+            save_notes_json(notes, file_name)
         elif choice == '6':
-            pass
+            id = int(input('Введите ID заметки для удаления: '))
+            notes = delete_note(notes, id)
+            save_notes_json(notes, file_name)
+            print('Заметка удалена')
         elif choice == '7':
             break
 
